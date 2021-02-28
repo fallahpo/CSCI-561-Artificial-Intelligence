@@ -71,7 +71,6 @@ def SentenceUpdate(sentenceUC, UnitClause, Value):
                 elif (NewDecode[0]==Decode[0] and Value==0) or (NewDecode[0] != Decode[0] and Value == 1):
                     if len(sentenceUC[i])==1:
                         Flag = 'False'
-                        # print 'break'
                         return [sentenceUpdate, Flag]
                     else:
                         del sentenceUpdate[i][j]
@@ -108,7 +107,6 @@ def Find_Pure_Symbol(sentenceD,symbolsD, AssignmentD, M, N):
         for j in range(0,N):
             [letter, state] = SearchPureSimilar(sentencePS,symbolsPS[i][j])
             if state=='True':
-                # print [i, j, symbolsPS[i][j]]
                 if letter=='X':
                     AssignmentPS.append([symbolsPS[i][j], 1])
                 else:
@@ -116,7 +114,6 @@ def Find_Pure_Symbol(sentenceD,symbolsD, AssignmentD, M, N):
 
     AssignmentPS = RemoveRepeated(AssignmentPS)
     for i in range(0,len(AssignmentPS)):
-        # print ['enter', sentencePS]
         [sentencePS , Flag] = SentenceUpdate(sentencePS, AssignmentPS[i][0], AssignmentPS[i][1])
         if Flag=='False':
             return [sentencePS, AssignmentPS, Flag]
@@ -137,7 +134,6 @@ def RestSymbols(AssignmentD, symbolsD, M, N):
         index=[]
         for i in range(0, len(AssignmentRSset)):
             Decode = Decoder(AssignmentRSset[i][0])
-            # print [i, len(AssignmentRS), len(AssignmentRSset) , AssignmentRSset[i][0],AssignmentRSset[i][1]]
             if AssignmentRSset[i][1]==1:
                 index.append(Decode[1]) #Save the assigned Guest ID
             else:
