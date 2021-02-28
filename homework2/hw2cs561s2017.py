@@ -24,24 +24,15 @@ def GuestAssignment(Assignment):
             Guest.append(Decode[1])  # Save the assigned Guest ID
             Table.append(Decode[2])  # Save the assigned Table ID
 
-    # print Guest
-    # print Table
-
     GuestSorted = []
     TableSorted = []
     for i in range(0, M):
         for j in range(0, len(Guest)):
-            # print [i , j, Guest[j]]
             if i == Guest[j] and i not in GuestSorted:
                 GuestSorted.append(Guest[j])
                 TableSorted.append(Table[j])
-    # print GuestSorted
-    # print TableSorted
     Guest1 = [x + 1 for x in GuestSorted]
     Table1 = [y + 1 for y in TableSorted]
-    # print Assignment
-    # print Guest1
-    # print Table1
     return [Guest1, Table1]
 
 def SearchPureSimilar(sentencePS,X):
@@ -68,8 +59,6 @@ def SearchPureSimilar(sentencePS,X):
 def SentenceUpdate(sentenceUC, UnitClause, Value):
     Decode = Decoder(UnitClause)
     sentenceUpdate = mycopy.deepcopy(sentenceUC)
-    # print "enter"
-    # print sentenceUpdate
     index = []
     Flag = 0
     for i in range(0,len(sentenceUC)):
@@ -86,12 +75,7 @@ def SentenceUpdate(sentenceUC, UnitClause, Value):
                         return [sentenceUpdate, Flag]
                     else:
                         del sentenceUpdate[i][j]
-    # print sentenceUpdate
-    # print index
     sentenceUpdate = [v for i, v in enumerate(sentenceUpdate) if i not in index]
-    # print sentenceUpdate
-    # print "exit"
-
     return [sentenceUpdate, Flag]
 
 def Find_Unit_Clause(sentenceD,symbolsD, AssignmentD):
@@ -112,8 +96,6 @@ def Find_Unit_Clause(sentenceD,symbolsD, AssignmentD):
         [sentenceUC , Flag] = SentenceUpdate(sentenceUC, AssignmentUC[i][0], AssignmentUC[i][1])
         if Flag=='False':
             return [sentenceUC, AssignmentUC, Flag]
-        # print [i, AssignmentUC[i][0], AssignmentUC[i][1]]
-        # print ['exit',sentenceUC]
     return [sentenceUC, AssignmentUC, Flag]
 
 def Find_Pure_Symbol(sentenceD,symbolsD, AssignmentD, M, N):
@@ -121,7 +103,6 @@ def Find_Pure_Symbol(sentenceD,symbolsD, AssignmentD, M, N):
     symbolsPS = mycopy.deepcopy(symbolsD)
     AssignmentPS = mycopy.deepcopy(AssignmentD)
 
-    # print ['enter',AssignmentPS]
     Flag = 0
     for i in range(0,M):
         for j in range(0,N):
@@ -132,23 +113,18 @@ def Find_Pure_Symbol(sentenceD,symbolsD, AssignmentD, M, N):
                     AssignmentPS.append([symbolsPS[i][j], 1])
                 else:
                     AssignmentPS.append([symbolsPS[i][j], 0])
-            # print [i,j,AssignmentPS]
-    # print AssignmentPS
+
     AssignmentPS = RemoveRepeated(AssignmentPS)
     for i in range(0,len(AssignmentPS)):
         # print ['enter', sentencePS]
         [sentencePS , Flag] = SentenceUpdate(sentencePS, AssignmentPS[i][0], AssignmentPS[i][1])
         if Flag=='False':
             return [sentencePS, AssignmentPS, Flag]
-        # print [i, AssignmentPS[i][0], AssignmentPS[i][1]]
-        # print ['exit',sentencePS]
 
     return [sentencePS, AssignmentPS, Flag]
 
 def RestSymbols(AssignmentD, symbolsD, M, N):
     [Guest, Table] = GuestAssignment(AssignmentD)
-    # print ['RestSymbols',Guest]
-    # print ['RestSymbols',Table]
     if len(Guest)==M:
         return 'Done'
     else:
@@ -168,21 +144,16 @@ def RestSymbols(AssignmentD, symbolsD, M, N):
                 if Decode[1] in index:
                     w = 'Do nothing'
                 else:
-                    # print Total
-                    # print [Decode[1],Decode[2],'qqqqqqqqq',index]
                     Total[Decode[1]][Decode[2]]=-1
-                    # print Total
-        # print ['enter',Total]
+
         for j in range(0,len(Total)):
             aaa = Total[j]
             bbb = [i for i, x in enumerate(aaa) if x == -1]
             Total[j] = [v for i, v in enumerate(Total[j]) if i not in bbb]
-        # print ['exit',Total]
 
         AllGuest = [v for i, v in enumerate(AllGuest) if i not in index]
 
         if len(AllGuest)>0:
-            # print [AllGuest[0],Total[AllGuest[0]][0]]
             NextAssignment = symbolsD[AllGuest[0]][Total[AllGuest[0]][0]]
         else:
             NextAssignment = 'Done'
@@ -194,69 +165,42 @@ def DPLL(sentence, symbols, Assignment, M, N):
     symbolsD = mycopy.deepcopy(symbols)
     AssignmentD = mycopy.deepcopy(Assignment)
 
-    # print 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
     [sentenceD, AssignmentD, Flag] = Find_Pure_Symbol(sentenceD, symbolsD, AssignmentD, M, N)
-    # print sentenceD
-    # print AssignmentD
-    # print Flag
     if Flag == 'False':
-        # print 'bazgasht'
         return ['No', AssignmentD]
 
-    # print 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'
     [sentenceD, AssignmentD, Flag] = Find_Unit_Clause(sentenceD, symbolsD, AssignmentD)
-    # print sentenceD
-    # print AssignmentD
-    # print Flag
     if Flag == 'False':
-        # print 'bazgasht'
         return ['No', AssignmentD]
 
-    # print 'cccccccccccccccccccccccccccccc'
     NextAssignment = RestSymbols(AssignmentD, symbolsD, M, N)
-    # print NextAssignment
     if NextAssignment == 'Done':
-        # print 'bazgasht az RestSymbols'
-        # print AssignmentD
         return ['Yes', AssignmentD]
     else:
-        # print NextAssignment
-        # print sentenceD
-
         AssignmentD1 = mycopy.deepcopy(AssignmentD)
         AssignmentD2 = mycopy.deepcopy(AssignmentD)
         AssignmentD1.append([NextAssignment, 1])
         AssignmentD2.append([NextAssignment, 0])
         XXXX = mycopy.deepcopy(AssignmentD1)
         YYYY = mycopy.deepcopy(AssignmentD2)
-        # [status, AssignmentD] = DPLL(sentenceD, symbolsD, XXXX, M, N)
         [status1, AssignmentD1] = DPLL(sentenceD, symbolsD, XXXX, M, N)
-        # print ['1', status1, AssignmentD1]
         [Guest, Table] = GuestAssignment(AssignmentD1)
-        # print Guest
-        # print Table
         if status1=='Yes':
             AssignmentD = mycopy.deepcopy(AssignmentD1)
-            # print 'bazgasht az '
             return ['Yes', AssignmentD]
 
         [status2, AssignmentD2] = DPLL(sentenceD, symbolsD, YYYY, M, N)
-        # print ['2',status2, AssignmentD2]
         [Guest, Table] = GuestAssignment(AssignmentD2)
-        # print Guest
-        # print Table
         if status2=='Yes':
             AssignmentD = mycopy.deepcopy(AssignmentD2)
-            # print 'bazgasht az '
             return ['Yes', AssignmentD]
 
         if status1=='No' and status1=='No':
             return ['No', AssignmentD]
 
 #------ Open the file and read the content
-f = open('input.txt','r')
+f = open('./Samples test cases/input1.txt','r')
 Content = f.read().split()
-# print Content
 M = int(Content[0]) #number of guests
 N = int(Content[1]) #number of tables
 
@@ -277,27 +221,19 @@ for i in range(0,M):
             sentence.append(["Z.{q}.{w}".format(q=i,w=j), "Z.{q}.{w}".format(q=i,w=k)])
     sentence.append(clause)
 #------ Relationship Constraints
-R = [[0] * M  for _ in xrange(M)] #relationship matrix
+R = [[0] * M  for _ in range(M)] #relationship matrix
 ConstraintsNum = (len(Content)-2)/3
-for i in range(0,ConstraintsNum*3,3):
+for i in range(0,int(ConstraintsNum*3),3):
     Relation = Content[i+4]
     G1 = int(Content[i+2])-1
     G2 = int(Content[i+3])-1
     if Relation == 'F':
         R[G1][G2] = 1
         R[G2][G1] = 1
-        # for i in range(0,N):
-        #     sentence.append(["Z.{q}.{w}".format(q=G1, w=i), "X.{q}.{w}".format(q=G2, w=i)])
-        #     sentence.append(["X.{q}.{w}".format(q=G1, w=i), "Z.{q}.{w}".format(q=G2, w=i)])
     else:
         R[G1][G2] = -1
         R[G2][G1] = -1
-        # for i in range(0, N):
-        #     sentence.append(["Z.{q}.{w}".format(q=G1, w=i), "Z.{q}.{w}".format(q=G2, w=i)])
 
-# print R
-# print sentence
-# sentence=[]
 for i in range(0,M):
     for j in range(i+1, M):
         if R[i][j]==1:
@@ -307,19 +243,12 @@ for i in range(0,M):
         elif R[i][j]==-1:
             for k in range(0, N):
                 sentence.append(["Z.{q}.{w}".format(q=i, w=k), "Z.{q}.{w}".format(q=j, w=k)])
-# print [len(sentence),sentence]
 
 Assignment=[]
 [status, Assignment] = DPLL(sentence, symbols, Assignment, M, N)
-# print 'ooooooooooooooooooooooooooooooooooooooooooooo'
-# print status
-# print Assignment
-
 [Guest, Table] = GuestAssignment(Assignment)
-# print Guest
-# print Table
 
-file = open("output.txt", "w")
+file = open("./Samples test cases/output.txt", "w")
 if status=='No':
     file.write("no")
 else:
