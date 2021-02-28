@@ -85,15 +85,12 @@ def utility(state, Player):
     return  Utility
 
 def max_value(state, alpha, beta, Player, Depth, Cut_off_depth):
-    # print 1111111111111111111111
     if terminal_test(Depth, Cut_off_depth):
         return utility(state, Player)
     else:
         Depth += 1
         v = float("-inf")
-        # print state
         Possible_Moves = valid_move_finder(state, Player)
-        print [Depth, Possible_Moves]
         if len(Possible_Moves)==0:
             Player = change_player(Player)
 
@@ -101,7 +98,6 @@ def max_value(state, alpha, beta, Player, Depth, Cut_off_depth):
             for i in range(0, len(Possible_Moves)):
                 Updated_Board = update_board(state, Player, Possible_Moves[i])
                 v = max(v, min_value(Updated_Board, alpha, beta, change_player(Player), Depth, Cut_off_depth))
-                print [grid_number_to_name(Possible_Moves[i]), Depth, v, alpha, beta]
                 if v >= beta:
                     return v
                 alpha = max(alpha, v)
@@ -109,14 +105,12 @@ def max_value(state, alpha, beta, Player, Depth, Cut_off_depth):
             return v
 
 def min_value(state, alpha, beta, Player, Depth, Cut_off_depth):
-    # print 2222222222222222222222
     if terminal_test(Depth, Cut_off_depth)==1:
         return utility(state, Player)
     else:
         Depth += 1
         v = float("inf")
         Possible_Moves = valid_move_finder(state, Player)
-        # print [Depth, Possible_Moves]
         if len(Possible_Moves) == 0:
             Player = change_player(Player)
             Depth += 1
@@ -124,7 +118,6 @@ def min_value(state, alpha, beta, Player, Depth, Cut_off_depth):
             for i in range(0, len(Possible_Moves)):
                 Updated_Board = update_board(state, Player, Possible_Moves[i])
                 v = min(v, max_value(Updated_Board, alpha, beta, change_player(Player), Depth, Cut_off_depth))
-                print [grid_number_to_name(Possible_Moves[i]), Depth, v, alpha, beta]
                 if v <= alpha:
                     return v
                 beta = min(beta, v)
@@ -133,7 +126,7 @@ def min_value(state, alpha, beta, Player, Depth, Cut_off_depth):
 
 
 #------ Open the file and read the content
-f = open('input.txt','r')
+f = open('./Sample Test Cases/Test Case 1/input.txt','r')
 Content = f.read().splitlines()
 Player = Content[0]
 if Player == 'X':
@@ -141,9 +134,7 @@ if Player == 'X':
 else:
     Opponent = 'X'
 Cut_off_depth = int(Content[1])
-Board = []
-for i in range(0,8):
-    Board.append(Content[i+2])
+Board = Content[2:]
 for i in range(0,8):
     Board[i]= list(Board[i])
 
@@ -152,10 +143,5 @@ Depth = 0
 alpha = float("-inf")
 beta = float("inf")
 state = mycopy.deepcopy(Board)
-# Possible_Moves = valid_move_finder(state, Player)
-# print state
-# print Possible_Moves
-# print Possible_Moves[0]
-# Updated_Board = update_board(state, Player, Possible_Moves[0])
-# print Updated_Board
+
 v = max_value(state, alpha, beta, Player, Depth, Cut_off_depth)
