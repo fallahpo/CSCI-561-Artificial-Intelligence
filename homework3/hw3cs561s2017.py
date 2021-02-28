@@ -47,8 +47,6 @@ def VarEvidenceUpdate(QQQ, Var, Evidencess, Decision):
     e = [v for i, v in enumerate(e) if i not in index]
     Evidencess = [v for i, v in enumerate(Evidencess) if i not in indexE]
     sort = sorted(e, key=Var.index)
-    # print sort
-    # print Var
     if len(sort) > 0:
         YY = Var.index(sort[-1])
         UpdatedVar = Var[0:YY+1]
@@ -56,12 +54,6 @@ def VarEvidenceUpdate(QQQ, Var, Evidencess, Decision):
     else:
         UpdatedVar = Var
         UpdatedEvidencess = Evidencess
-
-    # print [len(Var), Var]
-    # print [len(Evidencess), Evidencess]
-    # print sort
-    # print [len(UpdatedVar), UpdatedVar]
-    # print [len(UpdatedEvidencess), UpdatedEvidencess]
 
     return [UpdatedVar, UpdatedEvidencess]
 
@@ -97,7 +89,6 @@ def ReadingQueries(Queries):
             for j in range(0,len(Chert6)):
                 if Chert6[j] == '=':
                     PolishedQ[i].append("{q}.{w}".format(q=Chert6[j-1], w=Chert6[j+1]))
-                    # print PolishedQ
                 elif Chert6[j] == '|':
                     PolishedQ[i].append('|')
 
@@ -118,23 +109,18 @@ def ReadingQueries(Queries):
             else:
                 for k in range(0, len(Chert16)):
                     PolishedQ[i].append(Chert16[k])
-
     return PolishedQ
 
 def FindParent(child, QU, Parent):
-    # print 'FindParentFindParentFindParentFindParentFindParent'
-    # print [child, QU, Parent]
     potentialPar = mycopy.deepcopy(QU)
     potentialPar.remove(child)
     RealParents = []
     RealParentsName = []
     Chert7 = child.split('.')
-    # print Chert7
     par = []
     for i in range(0,len(potentialPar)):
         Chert8 = potentialPar[i].split('.')
         par.append(Chert8[0])
-    # print potentialPar
     for i in range(0, len(Parent)):
         lp = len(Parent[i])
         if Chert7[0] == Parent[i][0] and lp > 1:
@@ -187,8 +173,6 @@ def VarUpdate(QQQ, Var, Decision, Parent):
     return UpdatedVar
 
 def FindProb(Child, Parent, Chert10):
-    # print 'FindProbFindProbFindProbFindProbFindProb'
-    # print [Child, Parent, Chert10]
     Prob = []
     c1 = Child.split('.')
     L = len(Parent)
@@ -223,8 +207,6 @@ def FindProb(Child, Parent, Chert10):
     return Prob
 
 def LookupTable(Child, Parent, ChildName, ParentName, Evidencess):
-    # print 'LookupTableLookupTableLookupTableLookupTable'
-    # print [Child, Parent, ChildName, ParentName, Evidencess]
     ParentCopy = mycopy.deepcopy(Parent)
     DeleteIndex = []
     index=100000
@@ -243,10 +225,7 @@ def LookupTable(Child, Parent, ChildName, ParentName, Evidencess):
                 index = i
     if index < 100000:
         Chert10 = mycopy.deepcopy(Evidencess[index])
-        # print ParentCopy
-        # print DeleteIndex
         ParentCopy = [v for i, v in enumerate(ParentCopy) if i not in DeleteIndex]
-        # print ParentCopy
         Prob = FindProb(Child, ParentCopy, Chert10)
     else:
         Prob = 'no'
@@ -254,10 +233,7 @@ def LookupTable(Child, Parent, ChildName, ParentName, Evidencess):
     return Prob
 
 def EnumerateALL(Var, EV, Parent, Evidencess):
-    # print 'EnumerateALLEnumerateALLEnumerateALLEnumerateALLEnumerateALLEnumerateALLEnumerateALL'
-
     if len(Var)==0:
-        # print ['zero', Var]
         return 1
     VarCopy = mycopy.deepcopy(Var)
     EVcopy = mycopy.deepcopy(EV)
@@ -269,7 +245,6 @@ def EnumerateALL(Var, EV, Parent, Evidencess):
         YY = ''.join([Y, '.', value[e.index(Y)]])
         [RealParents, RealParentsName, ChildName] = FindParent(YY, EVcopy, Parent)
         Prob = LookupTable(YY, RealParents, ChildName, RealParentsName, Evidencess)
-        # print ['YYYY', Prob, EVcopy]
         return Prob*EnumerateALL(RestVars, EVcopy, Parent, Evidencess)
     else:
         YYp = ''.join([Y, '.', '+'])
@@ -284,8 +259,6 @@ def EnumerateALL(Var, EV, Parent, Evidencess):
 
         [RealParents2, RealParentsName2, ChildName2] = FindParent(YYn, EVcopyn, Parent)
         Prob2 = LookupTable(YYn, RealParents2, ChildName2, RealParentsName2, Evidencess)
-        # print ['NNNNN11', Prob1, EVcopyp]
-        # print ['NNNNN22', Prob2, EVcopyn]
         return Prob1*EnumerateALL(RestVars, EVcopyp, Parent, Evidencess) + Prob2*EnumerateALL(RestVars, EVcopyn, Parent, Evidencess)
 
 def UtilityUpdate(UtilityParents, UtilityParentValues, index, ObservedEvidence):
@@ -298,10 +271,8 @@ def UtilityUpdate(UtilityParents, UtilityParentValues, index, ObservedEvidence):
         removingUvalue = value[YY]
         for j in range(0, len(UtilityParentValues)):
             chert = UtilityParentValues[j].split(' ')
-            # print ['cehr', A, chert[A+1], removingU, removingUvalue,  chert]
             if chert[A+1] == removingUvalue:
                 del chert[A+1]
-                # print ['ewr', ' '.join(chert)]
                 UtilityParentValuesUpdate.append(' '.join(chert))
 
     UtilityParentsUpdate = [v for i, v in enumerate(UtilityParents) if i not in index]
@@ -319,14 +290,8 @@ def ExpectedUtility(Utilities, ObservedEvidence, Var, Parent, Decision, Evidence
         if UtilityParents[i] in e:
             index.append(i)
 
-    # print UtilityParents
-    # print UtilityParentValues
-    # print ObservedEvidence
     if len(index) > 0:
         [UtilityParents, UtilityParentValues] = UtilityUpdate(UtilityParents, UtilityParentValues, index, ObservedEvidence)
-    # print UtilityParents
-    # print UtilityParentValues
-
     ProbParent = []
     ValueParent = []
     Sum = 0
@@ -345,13 +310,7 @@ def ExpectedUtility(Utilities, ObservedEvidence, Var, Parent, Decision, Evidence
             ProbParent.append(xxx)
             ValueParent.append(values[0])
             Sum = Sum + xxx
-        # print 'oooooooooooooooooooooo'
-        # print ProbParent
-        # print ValueParent
-        # print ['valus', "".join([UtilityParents[0], '.', values[1]]), xxx, Sum]
-
         for i in range(0, len(UtilityParentValues)):
-            # print [ProbParent[i], ValueParent[i], Sum]
             FinalUtility = FinalUtility + ProbParent[i]*float(ValueParent[i])/Sum
         return FinalUtility
 
@@ -365,13 +324,7 @@ def ExpectedUtility(Utilities, ObservedEvidence, Var, Parent, Decision, Evidence
             ProbParent.append(xxx)
             ValueParent.append(values[0])
             Sum = Sum + xxx
-        # print 'oooooooooooooooooooooo'
-        # print ProbParent
-        # print ValueParent
-        # print ['valus', "".join([UtilityParents[0], '.', values[1]]), "".join([UtilityParents[1], '.', values[2]]), xxx]
-
         for i in range(0, len(UtilityParentValues)):
-            # print [ProbParent[i], ValueParent[i], Sum]
             FinalUtility = FinalUtility + ProbParent[i]*float(ValueParent[i])/Sum
         return FinalUtility
 
@@ -383,17 +336,15 @@ def ExpectedUtility(Utilities, ObservedEvidence, Var, Parent, Decision, Evidence
             EV.append("".join([UtilityParents[1], '.', values[2]]))
             EV.append("".join([UtilityParents[2], '.', values[3]]))
             xxx = EnumerateALL(Var, EV, Parent, Evidencess)
-            # print ['valus', "".join([UtilityParents[0], '.', values[1]]), "".join([UtilityParents[1], '.', values[2]]), "".join([UtilityParents[2], '.', values[3]]), xxx]
             ProbParent.append(xxx)
             ValueParent.append(values[0])
             Sum = Sum + xxx
         for i in range(0, len(UtilityParentValues)):
-            # print [ProbParent[i], ValueParent[i], Sum]
             FinalUtility = FinalUtility + ProbParent[i]*float(ValueParent[i])/Sum
         return FinalUtility
 
 #-- Open the file and read the content
-f = open('input.txt','r')
+f = open('./Sample test cases/input01.txt','r')
 Content = f.read().split('******')
 #-- Separation
 Query = Content[0]
@@ -424,11 +375,7 @@ for i in range(0, len(PolishedQueries)):
     VarCopy = mycopy.deepcopy(Var)
     EvidencessCopy = mycopy.deepcopy(Evidencess)
     ParentCopy = mycopy.deepcopy(Parent)
-    # [UpdatedVar, UpdatedEvidencess] = VarEvidenceUpdate(QQQ, VarCopy, EvidencessCopy, Decision)
-    # print Var
-    # print UpdatedVar
     UpdatedVar = VarUpdate(QQQ, VarCopy, Decision, ParentCopy)
-    # print UpdatedVar
 
     varvar = Var
     evievi = Evidencess
@@ -449,7 +396,6 @@ for i in range(0, len(PolishedQueries)):
 
         sortedQU = SortVar(QU, varvar)
         for j in range(0,len(QU)):
-            # print 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxx'
             QUQU = sortedQU[j]  #QU[j]
             [RealParents, RealParentsName, ChildName] = FindParent(QUQU, QUp, Parent)
             #-----------------------------
@@ -469,7 +415,6 @@ for i in range(0, len(PolishedQueries)):
 
 
             if Prob == 'no':
-                # print 'Prob ==  no Prob == no  Prob == no'
                 EVv = mycopy.deepcopy(EV)
                 for p in range(0, len(RealParents)):
                     if RealParents[p] not in EVv:
@@ -486,14 +431,11 @@ for i in range(0, len(PolishedQueries)):
                 EVoriginal.append(Chert13)
                 EVprime.append(Chert15)
 
-                # print EVoriginal
                 XXX = EnumerateALL(varvar, EVoriginal, Parent, evievi)
-                # print 'SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSs'
                 YYY = EnumerateALL(varvar, EVprime, Parent, evievi)
                 result = result * XXX / (XXX + YYY)
             else:
                 result = result*Prob
-                # print [QUQU, Prob]
         result = round(result, 2)
 
     elif QQQ[0] == 'EU':
@@ -542,8 +484,6 @@ for i in range(0, len(PolishedQueries)):
                 if EUs[i] > max:
                     index = i
                     max = EUs[i]
-            # print EUs
-            # print [ value[index], str(EUs[index]) ]
             result = ' '.join([ value[index][0], value[index][1], str(int(round(EUs[index]))) ])
 
 
@@ -559,36 +499,28 @@ for i in range(0, len(PolishedQueries)):
                 EV.append(''.join([Decisions[2], '.', sign[2]]))
                 EU = ExpectedUtility(Utilities, EV, varvar, Parent, Decision, evievi)
                 EUs.append(EU)
-            print EUs
             max = 0
             for i in range(0, 8):
                 if EUs[i] > max:
                     index = i
                     max = EUs[i]
-            # print EUs
-            # print [value[index], str(EUs[index])]
             result = ' '.join([value[index][0], value[index][1], value[index][1], str(int(round(EUs[index])))])
 
     Result.append(result)
 
-# print ['final result = ', Result ]
-
-file = open("output.txt", "w")
+file = open("./Sample test cases/output.txt", "w")
 for i in range(0, len(Result)):
     TYPE = type(Result[i])
     if TYPE == int:
-        # print 'int'
         file.write("%d\n" % Result[i])
     elif TYPE == float:
-        # print 'float'
         if Result[i] >= 1:
             file.write("%d\n" % Result[i])
         else:
             file.write("%.2f\n" % Result[i])
     elif TYPE == str:
-        # print 'str'
         file.write("%s\n" % Result[i])
 file.close()
 
 
-print default_timer() - start
+#print default_timer() - start
